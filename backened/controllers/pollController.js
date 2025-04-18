@@ -1,0 +1,195 @@
+const Poll = require("../models/Poll.js")
+const User = require("../models/User.js")
+
+
+//Create a new poll
+async function createPoll(req,res) {
+    let {question,type,options,creatorId} = req.body
+
+    if(!question || !type || !creatorId){
+        return res.status(400).json({message:"Question , type and creatorId are required"})
+    }
+
+    try {
+        let processedOptions = [];
+        switch(type){
+            case "single-choice":
+                if(!options || options.length<2){
+                    return res.status(400).json({message:"Single-choice Polls must have at least two options."})
+                }
+                processedOptions= options.map((option)=>({optionText :option}))
+                break;
+            case "open-ended":    
+                processedOptions = [];  //no Option needed for open-ended
+                break;
+            case "rating": 
+                 processedOptions=[1,2,3,4,5].map((value)=>({optionText:value.toString()}))
+                 break;
+            case "yes/no":
+                processedOptions= ["Yes","No"].map((option)=>({optionText:option}))
+                break;
+            case "image-based":
+                if(!options || options.length<2){
+                    return res.status(400).json({message:"Image based Polls must have atleats 2 image URLs"})
+                }  
+                processedOptions=options.map((url=>({optionText:url})))
+                break;
+
+             default:
+                 return res.status(400).json({message:"Invalid Poll type"})
+            }
+
+                 const newPoll = await Poll.create({
+                    question,
+                    type,
+                    options:processedOptions,
+                    creator:creatorId,
+
+                }) 
+
+                res.status(201).json(newPoll)
+        
+    } catch (error) {
+        res.status(500).json({message:"Error creating Polls ",error:error.message})
+        
+    }
+
+    
+}
+
+//get all  polls
+async function getAllPolls(req,res) {
+
+let {type,creatorId,page =1,limit=10} = req.query;
+let filter ={}
+let userId = req.user._id
+
+if(type){
+    filter.type= type;
+}
+if(creatorId){
+    filter.creator = creatorId
+}
+
+try {
+    //Calculate pagination parameter
+    const pageNumber = parseInt(page,10);
+    const pageSize = parseInt(limit,10);
+    const skip = (pageNumber-1)*pageSize;
+
+    //fetch Poll with pagination
+
+    const polls = await Poll.find(filter)
+    .populate("creator", "fullName username email profileImageUrl")
+    .populate({
+        path:"responses.voterId",
+        select:"username profileImageUrl fullName "
+    })
+    .skip(skip)
+    .limit(pageSize)
+    .sort({createdAt:-1})
+
+    //Add 'userhasVoted' flag for each poll
+
+    const updatedPolls = polls.map((poll)=>{
+        const userhasVoted = poll.voters.some((voterId)=>
+        voterId.equals(userId))
+        return{
+            ...poll.toObject(),
+            userhasVoted,
+        }
+    })
+
+    //get total count of polls  for pagination metadata
+    const totalPolls = await Poll.countDocuments(filter)
+
+    const stats  = await Poll.aggregate([
+        {
+            $group:{
+                _id:"$type",
+                count:{$sum:1},
+            }
+        },
+        {
+            $project:{
+                type:"$_id",
+                count:1,
+                _id:0,
+
+            }
+        }
+    ])
+
+
+    //Esnure all counts are included in stats , even those with zero counts 
+    const allTyps=[
+        {type:"single-choice" , label:"Single Choice "},
+        {type:"yes/no" , label:"Yes/No "},
+        {type:"rating" , label:"Rating"},
+        {type:"image-based" , label:"Image Based"},
+        {type:"open-ended" , label:"Open Ended"}
+    ]
+
+    const statswithDefault = allTyps.map((pollType)=>{
+        const stat = stats.find((item)=>item.type===pollType.type)
+        return{ 
+            label:pollType.label,
+            type:pollType.type,
+            count:stat? stat.count : 0
+        }
+    })
+    .sort((a,b)=>b.count-a.count)
+
+
+    res.status(200).json({
+        polls:updatedPolls,
+        currentPage:pageNumber,
+        totalPages: Math.ceil(totalPolls/pageSize),
+        totalPolls,
+        stats:statswithDefault
+
+    })
+    
+} catch (error) {
+    res.status(500).json({message:"Error in getting all polls,",error:error.message})
+    
+}
+    
+}
+
+//get all voted pols
+async function getVotedPolls(req,res) {
+    
+}
+
+//get poll by ID
+async function getPollById(req,res) {
+    
+}
+
+//Vote Poll
+async function voteOnPoll(req,res) {
+    
+}
+
+//Close Poll
+async function closePoll(req,res) {
+    
+}
+
+//Bookedmarked Poll
+async function bookmarkPoll(req,res) {
+    
+}
+
+//Delete Poll
+async function deletePoll(req,res) {
+    
+}
+
+//get all the bookedmarked poll
+async function getBookmaredkPolls(req,res) {
+    
+}
+
+module.exports={createPoll,getAllPolls,getVotedPolls,getPollById,voteOnPoll,closePoll,bookmarkPoll,deletePoll,getBookmaredkPolls}
