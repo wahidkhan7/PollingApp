@@ -6,11 +6,15 @@ const OptionsInput = ({optionList,setOptionList}) => {
 
     //function to hangle adding an option
     const handleAddOption = ()=>{
-
+        if(option.trim() && optionList.length<4){
+            setOptionList([...optionList,option.trim()]);
+            setOption("");
+        }
     }
     //functino to handle deleting an option
     const handleDeleteOption = (index)=>{
-
+        const updatedArr = optionList.filter((_,idx) => idx !==index);
+        setOptionList(updatedArr);
     };
   return (
     <div>
@@ -33,7 +37,7 @@ const OptionsInput = ({optionList,setOptionList}) => {
                     placeholder='Enter Option'
                     value={option}
                     onChange={({target})=>setOption(target.value)}
-                    className=''
+                    className='w-full text-[13px] text-black outline-none bg-gray-200/80 px-3 py-[6px] rounded-md'
                 />
 
                 <button

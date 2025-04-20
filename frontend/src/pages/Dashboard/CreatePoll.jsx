@@ -4,6 +4,7 @@ import { POLL_TYPE } from '../../utils/data';
 import OptionsInput from '../../components/input/OptionsInput';
 import useUserAuth from '../../hooks/useUserAuth';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import OptionImageSelector from '../../components/input/OptionImageSelector';
 
 const CreatePoll = () => {
   useUserAuth();
@@ -22,6 +23,8 @@ const CreatePoll = () => {
         [key]:value,
       }));
     }
+
+    const handleCreatePoll = async ()=>{}
   return (
     <DashboardLayout activeMenu='Create Poll'>
       <div className='bg-gray-100/80 my-5 p-5 rounded-lg mx-auto'>
@@ -75,6 +78,33 @@ const CreatePoll = () => {
             </div>
           </div>
         )}
+        {pollData.type === 'image-based' && 
+         <div className='mt-5'>
+            <label className='text-xs font-medium text-slate-600'>
+              IMAGE OPTIONS
+            </label>
+
+            <div className='mt-3'>
+              <OptionImageSelector
+              imageList = {pollData.imageOptions}
+              setImageList={(value)=>{
+              handleValueChange("imageOptions",value);
+              }}
+              />
+            </div>
+          </div>
+        }
+
+        {pollData.error && (
+          <p className='text-xs font-medium text-red-500 mt-5'>
+            {pollData.error}
+          </p>
+        )}
+
+        <button className='btn-primary py-2 mt-6' onClick={handleCreatePoll}>
+          CREATE
+        </button>
+
       </div>
     </DashboardLayout>  
   );
