@@ -70,7 +70,7 @@ const CreatePoll = () => {
 
       const optionData = await getOption();
       try{
-        const response = await axiosInstance.post(API_PATHS.POLLS.CREATE,{
+        const response = await axiosInstance.post(API_PATH.POLLS.CREATE,{
           question,
           type,
           options:optionData,
