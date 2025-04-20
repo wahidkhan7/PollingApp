@@ -22,7 +22,7 @@ const UserDetailsCard = (
         <div className='w-full h-32 bg-profile-bg--img bg-cover flex justify-center bg-sky-500 relative'>
             <div className='absolute -bottom-10 rounded-full overflow-hidden border-2 border-primary'>
                 <img
-                 src = {profileImageUrl || ""}
+                 src = {profileImageUrl || " "}
                  alt="Profile Image"
                  className='w-20 h-20 bg-slate-400 rounded-full'
                 />

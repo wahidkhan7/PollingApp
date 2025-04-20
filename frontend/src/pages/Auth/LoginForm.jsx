@@ -7,12 +7,16 @@ import { validateEmail } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosinstance";
 import { API_PATH } from "../../utils/apiPaths";
 import { UserContext } from "../../context/UserContext";
+
+
 const LoginForm = () => {
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
   const [error,setError] = useState(null);
   const {updateUser} = useContext(UserContext)
   const navigates = useNavigate();
+
+  
   const handleSubmit=async (e)=>{
     e.preventDefault();
     if(!validateEmail(email)){

@@ -31,7 +31,7 @@ const useUserAuth = () => {
         return () => {
             isMounted = false;
         };
-    }, {user,updateUser,clearUser});
+    }, [user,updateUser,clearUser]);
   
 }
 

@@ -15,13 +15,10 @@ const OptionsInput = ({optionList,setOptionList}) => {
   return (
     <div>
         {optionList.map((item,index)=>(
-            <div 
-            key={item}
-            className='flex justify-between bg-gray-200/80 px-4 py-2 rounded-md'>
+            <div key={item} className='flex justify-between bg-gray-200/80 px-4 py-2 rounded-md'>
             <p className='text-xs font-medium text-black'>{item}</p>
 
-            <button
-                onClick={()=>{
+            <button onClick={()=>{
                     handleDeleteOption(index);
                 }}
             >
@@ -34,14 +31,14 @@ const OptionsInput = ({optionList,setOptionList}) => {
                 <input
                     type='text'
                     placeholder='Enter Option'
-                    value={{option}}
+                    value={option}
                     onChange={({target})=>setOption(target.value)}
                     className=''
                 />
 
                 <button
                     className='btn-small text-nowrap py-[6px]'
-                    onClick={{handleAddOption}}
+                    onClick={handleAddOption}
                 >
                     <HiMiniPlus className='text-lg'/> Add Option
                 </button>

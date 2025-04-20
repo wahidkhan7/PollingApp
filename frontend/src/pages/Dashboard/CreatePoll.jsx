@@ -2,12 +2,14 @@ import React, { useContext, useState } from 'react'
 import {UserContext} from "../../context/UserContext"
 import { POLL_TYPE } from '../../utils/data';
 import OptionsInput from '../../components/input/OptionsInput';
+import useUserAuth from '../../hooks/useUserAuth';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
 const CreatePoll = () => {
   useUserAuth();
   const {user} = useContext(UserContext);
   const [pollData , setPollData] = useState({
-    questions: "",
+    question: "",
     type:"",
     options:[],
     imageOptions: [],
@@ -32,7 +34,7 @@ const CreatePoll = () => {
             placeholder="what's in your mind"
             className='w-full text-[13px] text-black outline-none bg-slate-200/80 p-2 rounded-md mt-2'
             rows={4}
-            value={pollData.questions}
+            value={pollData.question}
             onChange={({target})=>{
               handleValueChange("question",target.value)
             }}/>
@@ -41,19 +43,19 @@ const CreatePoll = () => {
         <div className='mt-3'>
           <label className='text-xs font-medium text-slate-600'>POLL TYPE</label>
 
-          <div className='flex gap-4 flex-wrap mt-3'>{POLL_TYPE.map((items)=>(
+          <div className='flex gap-4 flex-wrap mt-3'>{POLL_TYPE.map((item)=>(
             <div
-              key={items.value}
+              key={item.value}
               className={`option-chip ${
-                pollData.type === items.value
+                pollData.type === item.value
                 ? "text-white bg-primary border-primary"
                 : "border-sky-100"
               }`}
               onClick={()=>{
-                handleValueChange("type",items.value);
+                handleValueChange("type",item.value);
               }}
             >
-              {items.label}
+              {item.label}
             </div>
           ))}
           </div>
@@ -64,10 +66,10 @@ const CreatePoll = () => {
               OPTIONS
             </label>
             <div className='mt-3'>
-              <OptionInput
+              <OptionsInput
               optionList = {pollData.options}
               setOptionList={(value)=>{
-                handleValueChange("option",value);
+                handleValueChange("options",value);
               }}
               />
             </div>

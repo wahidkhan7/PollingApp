@@ -2,22 +2,22 @@ import { LuBadgeCheck, LuBookmark, LuLayoutDashboard, LuLogOut, LuPenTool, LuVot
 
 export const SIDE_MENU_DATA = [
     {
-        id:'01',
-        label:'Dashboard',
+        id:"01",
+        label:"Dashboard",
         icon:LuLayoutDashboard,
-        path:".Dashboard",
+        path:"/dashboard",
     },
     {
         id:"02",
         label:"Create Poll",
         icon:LuVote,
-        path:"/Create-poll"
+        path:"/create-poll"
     },
     {
         id:"03",
         label:"My Polls",
         icon:LuPenTool,
-        path:"my-polls"
+        path:"/my-polls"
     },
     {
         id:"04",
@@ -35,7 +35,7 @@ export const SIDE_MENU_DATA = [
         id:"06",
         label:"Logout",
         icon:LuLogOut,
-        path:"Logout",
+        path:"logout",
     }, 
 
 ]
