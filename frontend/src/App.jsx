@@ -14,6 +14,8 @@ import CreatePoll from "./pages/Dashboard/CreatePoll.jsx";
 import MyPolls from "./pages/Dashboard/MyPolls.jsx";
 import VotedPolls from "./pages/Dashboard/VotedPolls.jsx";
 import {UserProvider} from "./context/UserContext.jsx";
+import {Toaster} from 'react-hot-toast'
+import toast from "react-hot-toast";
 
 const App = () => {
   return (
@@ -32,6 +34,16 @@ const App = () => {
             <Route path="/Bookmarked-polls" element={<Bookmarks />} />
           </Routes>
         </Router>
+
+        <Toaster 
+         toastOptions={{
+          className:"",
+          style:{
+            fontSize:'13px'
+          },
+         }}
+         />
+        
       </UserProvider>
     </div>
   );

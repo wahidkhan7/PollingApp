@@ -9,11 +9,11 @@ const OptionImageSelector = ({imageList,setImageList}) => {
         //ye imagelist kaam nhi kar raha hn dekha esko ek baar
         if(file && imageList.length<4){
             const reader = new FileReader();
-            ReadableStream.onload=()=>{
+            reader.onload=()=>{
                 //Add object with base64 and file to the array
                 setImageList([
                     ...imageList,
-                    {base64:ReadableStream.reult.file},
+                    {base64:reader.result,file},
                 ]);
             };
             reader.readAsDataURL(file);
@@ -42,8 +42,6 @@ const OptionImageSelector = ({imageList,setImageList}) => {
                </div>
             ))}
         </div>)}
-
-        {JSON.stringify(imageList)}
 
         {imageList.length < 4 && (
             <div className='flex items-center gap-5'>

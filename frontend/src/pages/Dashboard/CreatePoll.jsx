@@ -5,6 +5,8 @@ import OptionsInput from '../../components/input/OptionsInput';
 import useUserAuth from '../../hooks/useUserAuth';
 import DashboardLayout from '../../components/layout/DashboardLayout';
 import OptionImageSelector from '../../components/input/OptionImageSelector';
+import axiosInstance from '../../utils/axiosinstance';
+import { API_PATH } from '../../utils/apiPaths';
 
 const CreatePoll = () => {
   useUserAuth();
@@ -24,7 +26,72 @@ const CreatePoll = () => {
       }));
     }
 
-    const handleCreatePoll = async ()=>{}
+    const clearData = () =>{
+      setPollData({
+        question:"",
+        type:"",
+        options:[],
+        imageOptions:[],
+        error:"",
+      })
+    }
+
+    const updateImageAndGetLink = async(imageOptions)=>{
+      const optionPromises = imageOptions.map(async(imageOptions)=>{
+        try{
+          const imgUploadRes = await uploadImage(imageOptions.file);
+          return imgUploadRes.imageUrl || "";
+        }catch(error){
+          toast.error(`Error uploading image: ${imageOptions.file.name}`);
+          return "";
+        }
+      })
+      const optionArr = await Promise.all(optionPromises);
+      return optionArr;
+    }
+
+    const handleCreatePoll = async ()=>{
+      const { question,type,options,imageOptions,error} = pollData;
+      if(!question || !type){
+        handleValueChange("error","Question & Type are required");
+        return;
+      }
+
+      if(type === "single-choice" && options.length < 2){
+        handleValueChange("error","Enter at two options");
+        return;
+      }
+
+      if(type === "image-based" && imageOptions.length < 2){
+        handleValueChange("error","Enter at two options");
+        return;
+      }
+      console.log("NO_ERR",{pollData});
+
+      const optionData = await getOption();
+      try{
+        const response = await axiosInstance.post(API_PATHS.POLLS.CREATE,{
+          question,
+          type,
+          options:optionData,
+          creatorId:user._id,
+        });
+        if(response){
+          toast.success("Poll Created Successfully");
+          clearData();
+        }
+      } catch(error){
+        if(error.response && error.response.data.message){
+          toast.error(error.response.data.message);
+          handleValueChange("error",error.response.data.message);
+        }
+        else{
+          handleValueChange("error","Something went wrong. Please try again");
+        }
+      }
+
+
+    }
   return (
     <DashboardLayout activeMenu='Create Poll'>
       <div className='bg-gray-100/80 my-5 p-5 rounded-lg mx-auto'>
@@ -86,10 +153,8 @@ const CreatePoll = () => {
 
             <div className='mt-3'>
               <OptionImageSelector
-              imageList = {pollData.imageOptions}
-              setImageList={(value)=>{
-              handleValueChange("imageOptions",value);
-              }}
+                imageList = {pollData.imageOptions}
+                setImageList={(value)=> handleValueChange("imageOptions",value)}
               />
             </div>
           </div>

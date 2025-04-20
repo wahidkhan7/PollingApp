@@ -20,7 +20,6 @@ const DashboardLayout = ({children,activeMenu}) => {
         <div className='grow mx-5'>{children}</div>
 
         <div className='hidden md:block mr-5'>
-          {JSON.stringify(user)}
           <UserDetailsCard
             profileImageUrl = {user && user.profileImageUrl}
             fullname={user && user.fullName}
