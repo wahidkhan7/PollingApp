@@ -160,59 +160,140 @@ try {
 
 //get all voted pols
 async function getVotedPolls(req,res) {
-    
+    const {page =1 , limit =10}= req.query;
+    const userId = req.user._id
+
+    try {
+    // Calculate pagination parameter 
+     const pageNumber = parseInt(page,10)
+     const pageSize = parseInt(limit,10)
+     const skip = (pageNumber-1)*pageSize
+     
+     //Fetch poll where the user has voted
+     const polls =await Poll.find({voters:userId})  //filter by polls where the user'id exists in the voters arryas
+     .populate("creator", "fullName username email profileImageUrl")
+     .populate({
+         path:"responses.voterId",
+         select:"username profileImageUrl fullName "
+     })
+     .skip(skip)
+     .limit(pageSize)
+     .sort({createdAt:-1})
+
+     //Add "userhasVoted" option in each poll
+     const updatedPolls = polls.map((poll)=>{
+        const userhasVoted = poll.voters.some((voterId)=>
+        voterId.equals(userId))
+        return{
+            ...poll.toObject(),
+            userhasVoted,
+              }
+           })
+        
+        //get total count of polls  for pagination metadata
+    const totalVotedPolls = await Poll.countDocuments({voters:userId})
+      
+
+    res.status(200).json({
+        polls:updatedPolls,
+        currentPage: pageNumber,
+        totalPages: Math.ceil(totalVotedPolls / pageSize),
+        totalVotedPolls,
+    })
+     
+       
+        } catch (error) {
+        res.status(500).json({message:"Error getting voted poll", error: error.message})
+        
+    }
 }
 
 //get poll by ID
 async function getPollById(req,res) {
-    
+    const {id} = req.params
+
+
+    try {
+        const poll = await Poll.findById(id).populate("creator", "username email")
+        if(!poll){
+            return res.status(500).json({message:"Poll not found"})
+        }
+
+        res.status(200).json(poll)
+    } catch (error) {
+        res.status(500).json({message:"Error getting poll by ID", error:error.message})
+        
+    }
 }
 
 //Vote Poll
-async function voteOnPoll(req,res) {
+async function voteOnPoll(req, res) {
+    const { id } = req.params;
+    const { optionIndex, voterId, responseText } = req.body;
+
+    try {
+        const poll = await Poll.findById(id);
+
+        if (!poll) {
+            return res.status(400).json({ message: "Poll not found!" });
+        }
+
+        if (poll.closed) {
+            return res.status(400).json({ message: "Poll is closed." });
+        }
+
+        if (poll.voters.includes(voterId)) {
+            return res.status(400).json({ message: "User already voted on this poll." });
+        }
+
+        if (poll.type === "open-ended") {
+            if (!responseText || typeof responseText !== "string") {
+                return res.status(400).json({ message: "Response text is required for open-ended polls." });
+            }
+
+            poll.responses.push({ voterId, responseText });
+        } else {
+            if (optionIndex === undefined || optionIndex < 0 || optionIndex >= poll.options.length) {
+                return res.status(400).json({ message: "Invalid option index." });
+            }
+
+            poll.options[optionIndex].votes += 1;
+        }
+
+        poll.voters.push(voterId);
+        await poll.save();
+
+        return res.status(200).json(poll);
+
+    } catch (error) {
+        return res.status(500).json({ message: "Error voting on poll", error: error.message });
+    }
+}
+
+
+//Close Poll
+async function closePoll(req,res) {
     const {id} = req.params
-    const{optionIndex,voterId,responseText} = req.body
+    const userId = req.user._id
 
     try {
         const poll = await Poll.findById(id)
 
         if(!poll){
-            return res.status(400).json({message:"Poll not found!!"})
+            return res.status(404).json({message:"Poll not found"})
         }
-        if(poll.closed){
-            return res.status(400).json({message:"Poll is closed."})
-        }
-        if(poll.voters.includes(voterId)){
-            return res.status(400).json({message:"User already voteed on this poll"})
+        
+        if(poll.creator.toString()!==userId){
+            return res.status(403).json({message:"You are not authorized to close this poll"})
         }
 
-        if(poll.type==="open-ended"){
-            if(!responseText){
-                return res.status(400).json({message:"Response text is required for open-ended"})
-            }
-            poll.responses.push({voterId,responseText})
-        }
-        else{
-            if(optionIndex===undefined || optionIndex < 0 || optionIndex>=poll.options.length){
-                return res.status(400).json({message:"Invalid option index"})
-            }
-            
-            poll.options[optionIndex].votes += 1;
-
-            poll.voters.push(voterId)
-            await poll.save()
-            res.status(200).json(poll)
-        }
-
+        poll.closed=true;
+        await poll.save();
+        return res.status(200).json({ message: "Poll closed successfully", poll });
     } catch (error) {
-        res.status(500).json({message:"Error creating Polls ",error:error.message})
+        res.status(500).json({message:"Error in closing the poll", error:error.message})
         
     }
-    
-}
-
-//Close Poll
-async function closePoll(req,res) {
     
 }
 
