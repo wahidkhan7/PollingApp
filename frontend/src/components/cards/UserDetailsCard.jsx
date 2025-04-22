@@ -2,8 +2,8 @@ import React from 'react'
 
 const StatsInfo=({label,value})=>{
     return <div className='text-center'>
-        <p className='font-medium text-gray-950'>{value}</p>
-        <p className='text-xs text-slate-700/50 mt-[2px] text-gray-950'>{label}</p>
+        <p className="font-medium text-gray-950">{value}</p>
+        <p className="text-xs text-slate-700/80 mt-[5px]">{label}</p>
 
     </div>
 }
@@ -18,7 +18,7 @@ const UserDetailsCard = (
     }
 ) => {
   return (
-    <div className='bg-slate-100/50 rounded-lg mt-16 overflow-hidden'>
+    <div className='bg-slate-100/50 rounded-lg mt-16 overflow-hidden '>
         <div className='w-full h-32 bg-profile-bg--img bg-cover flex justify-center bg-sky-500 relative'>
             <div className='absolute -bottom-10 rounded-full overflow-hidden border-2 border-primary'>
                 <img
@@ -34,12 +34,12 @@ const UserDetailsCard = (
                 <h5 className='text-lg text-gray-950 font-medium leading-6'>
                     {fullname}
                 </h5>
-                <span className='text-[13px] font-medium text-slate-700/60'>
+                <span className='text-[13px] font-medium text-slate-700/80'>
                  @{username}
                 </span>
             </div>
         </div>
-        <div className='flex items-center justify-center gap-5 flex-wrap my-6'>
+        <div className="flex items-center justify-center gap-5 flex-wrap my-6 p-4">
             <StatsInfo label="Polls Created" value = {totalPollsCreated || 0}/>
             <StatsInfo label="Polls Voted" value = {totalPollsVotes || 0}/>
             <StatsInfo label="Polls Bookmarked" value = {totalPollsBookmarked || 0}/>
