@@ -283,7 +283,7 @@ async function closePoll(req,res) {
             return res.status(404).json({message:"Poll not found"})
         }
         
-        if(poll.creator.toString()!==userId){
+        if(poll.creator.toString()!=userId){
             return res.status(403).json({message:"You are not authorized to close this poll"})
         }
 
@@ -298,17 +298,114 @@ async function closePoll(req,res) {
 }
 
 //Bookedmarked Poll
-async function bookmarkPoll(req,res) {
+async function bookmarkPoll(req, res) {
+    const { id } = req.params;  // This should be the poll ID
+    const userId = req.user._id;
     
-}
+    try {
+        
+        const user = await User.findById(userId);  
 
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Check if Poll is already bookmarked
+        const isBookmarked = user.bookmarkedPolls.includes(id);
+        
+        if (isBookmarked) {
+            // Remove Poll from bookmarked
+            user.bookmarkedPolls = user.bookmarkedPolls.filter((pollId) => pollId.toString() !== id);
+            await user.save();
+            return res.status(200).json({
+                message: "Poll removed from bookmarked",
+                bookmarkedPolls: user.bookmarkedPolls
+            });
+        }
+
+        // Add poll to bookmarked
+        user.bookmarkedPolls.push(id);
+        await user.save();
+        res.status(200).json({
+            message: "Poll bookmarked successfully",
+            bookmarkedPolls: user.bookmarkedPolls
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            message: "Error in bookmarking the poll", 
+            error: error.message 
+        });
+    }
+}
 //Delete Poll
-async function deletePoll(req,res) {
-    
+async function deletePoll(req, res) {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    try {
+        const poll = await Poll.findById(id);
+        if (!poll) {
+            return res.status(404).json({ message: "Poll not found!" });
+        }
+
+        if (poll.creator.toString() !== userId.toString()) {  
+            return res.status(403).json({ message: "You are not authorized to delete this poll" });
+        }
+
+        const deletedPoll = await Poll.findByIdAndDelete(id);
+        res.status(200).json({
+            message: "Poll deleted successfully",
+            deletedPoll: deletedPoll  
+        });
+        
+    } catch (error) {
+        res.status(500).json({ 
+            message: "Error in deleting the poll",  
+            error: error.message 
+        }); 
+    }
 }
 
 //get all the bookedmarked poll
 async function getBookmaredkPolls(req,res) {
+    const userId = req.user._id
+
+
+    try {
+        const user = await User.findById(userId).populate({
+            path:"bookmarkedPolls",
+            populate:{
+                path:"creator",
+                select:"fullName username profileImageUrl"
+            }
+        })
+        if(!user){
+            return res.status(404).json({message:"User not found"})
+        }
+        const bookmarkedPolls = user.bookmarkedPolls;
+
+        //Add userHasVoted flag for each Poll
+
+        const updatedPolls = bookmarkedPolls.map((poll)=>{
+            const userhasVoted = poll.voters.some((voterId)=>
+            voterId.equals(userId))
+            return{
+                ...poll.toObject(),
+                userhasVoted,
+                  }
+            })
+
+            res.status(200).json({bookmarkedPolls:updatedPolls})
+
+
+
+        
+    } catch (error) {
+        res.status(500).json({ 
+            message: "Error in bookmarking the poll", 
+            error: error.message 
+        }); 
+    }
     
 }
 
