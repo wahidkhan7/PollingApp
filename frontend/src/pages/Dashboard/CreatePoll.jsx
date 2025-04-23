@@ -7,6 +7,7 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import OptionImageSelector from '../../components/input/OptionImageSelector';
 import axiosInstance from '../../utils/axiosinstance';
 import { API_PATH } from '../../utils/apiPaths';
+import toast from 'react-hot-toast';
 
 const CreatePoll = () => {
   useUserAuth();
@@ -26,6 +27,7 @@ const CreatePoll = () => {
       }));
     }
 
+
     const clearData = () =>{
       setPollData({
         question:"",
@@ -37,18 +39,30 @@ const CreatePoll = () => {
     }
 
     const updateImageAndGetLink = async(imageOptions)=>{
-      const optionPromises = imageOptions.map(async(imageOptions)=>{
+      const optionPromises = imageOptions.map(async(imageOption )=>{
         try{
-          const imgUploadRes = await uploadImage(imageOptions.file);
+          const imgUploadRes = await uploadImage(imageOption.file);
           return imgUploadRes.imageUrl || "";
         }catch(error){
-          toast.error(`Error uploading image: ${imageOptions.file.name}`);
+          toast.error(`Error uploading image: ${imageOption.file.name}`);
           return "";
         }
       })
       const optionArr = await Promise.all(optionPromises);
       return optionArr;
     }
+    const getOption = async()=>{
+      switch(pollData.type){
+        case "single-choice": return pollData.options;
+
+        case "image-based": 
+        const options = await updateImageAndGetLink(pollData.imageOptions)
+        return options
+
+        default: return [] ; 
+      }
+    }
+ 
 
     const handleCreatePoll = async ()=>{
       const { question,type,options,imageOptions,error} = pollData;

@@ -13,6 +13,36 @@ export const UserProvider = ({children}) => {
     setUser(null);
   };
 
+
+  //update user Stats
+  const updateUserStats = (key,value)=>{
+    setUser((prev)=>({
+      ...prev,
+      [key]:value
+
+    }))
+  }
+
+  //Update totalPollscreated count locally
+  const onPollCreateOrDelete = (type="create") =>{
+         const totalPollsCreated = user.totalPollsCreated || 0;
+         updateUserStats(
+          "totalPollsCreated",
+          type== "create"? totalPollsCreated+1: totalPollsCreated-1
+         )
+  }
+  // function onPollCreateOrDelete(actionType) {
+  //   let currentCount = user.totalPollsCreated || 0;
+    
+  //   if (actionType === "create") {
+  //     currentCount += 1;
+  //   } else {
+  //     currentCount -= 1;
+  //   }
+    
+  //   updateUserStats("totalPollsCreated", currentCount);
+  // }
+
   return (
     <UserContext.Provider
         value={{
