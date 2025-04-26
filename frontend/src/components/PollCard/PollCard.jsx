@@ -45,6 +45,7 @@ const PollCard = ({
 }) => {
        const { user } = useContext(UserContext);
        const [selectedOptionIndex,setSelectedOptionIndex] = useState(-1);
+       const[rating,setRating] = useState(0)
        const [userResponse,setUserResponse] = useState("");
        const [isVoteComplete,setIsVoteComplete] = useState(userHasVoted);
        const [pollResult,setPollResult] = useState({
@@ -60,7 +61,10 @@ const PollCard = ({
        const [pollClosed,setPollClosed] = useState(isPollClosed || false);
        const [pollDeleted,setPollDeleted] = useState(false);
 
-        return !pollDeleted && <div className='bg-slate-100/50 my-5 p-5 rounded-lg border border-slate-100 mx-auto'>
+        return 
+        (
+        !pollDeleted && (
+        <div className='bg-slate-100/50 my-5 p-5 rounded-lg border border-slate-100 mx-auto'>
             <div className='flex items-start justify-between'>
                 <UserProfileInfo
                  imgUrl = {creatorProfileImg}
@@ -84,7 +88,10 @@ const PollCard = ({
                  onDelete={()=>{}}
                 />
             </div>
-        </div>;
+        </div>
+        )
+    )
+        
 }
 
 export default PollCard
