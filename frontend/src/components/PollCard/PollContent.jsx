@@ -1,5 +1,6 @@
 import React from 'react'
 import OptionInputTile from '../input/OptionInputTile'
+import Rating from '../input/Rating'
 
 const PollContent = ({
     type,
@@ -26,6 +27,8 @@ const PollContent = ({
             ))}
             </>
         )
+    case "rating":
+        return <Rating value={rating} onChnage={onRatingChange}/>;
   }
 }
 

@@ -7,7 +7,7 @@ const OptionInputTile = ({
 }) => {
 
     const getColors = ()=>{
-        if(!isSelected) return 'text-white bg-primary border-sky-400';
+        if(!isSelected) return 'text-white bg-slate-200 border-sky-400';
 
         return 'text-black bg-scale-200/80 border-slate-200';
     }
