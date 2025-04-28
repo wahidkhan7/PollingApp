@@ -40,6 +40,7 @@ const PollCard = ({
     creatorName,
     creatorUsername,
     userHasVoted,
+    isMyPoll,
     isPollClosed,
     createdAt
 }) => {
@@ -61,8 +62,7 @@ const PollCard = ({
        const [pollClosed,setPollClosed] = useState(isPollClosed || false);
        const [pollDeleted,setPollDeleted] = useState(false);
 
-        return 
-        (
+        return (
         !pollDeleted && (
         <div className='bg-slate-100/50 my-5 p-5 rounded-lg border border-slate-100 mx-auto'>
             <div className='flex items-start justify-between'>

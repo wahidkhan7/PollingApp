@@ -13,6 +13,6 @@ export const getInitials = (name)=>{
  return initials.toUpperCase();
 }
 
-export const getPollBookmarked = ()=>{
-    return 
+export const getPollBookmarked = (pollId,userBookmarks=[])=>{
+    return userBookmarks.includes(pollId)
 }
