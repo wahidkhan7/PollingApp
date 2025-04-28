@@ -14,8 +14,13 @@ const PollActions = (
 
 ) => {
     const[loading,setLoading] = useState(false)
-    const handleVoteClick =()=>{
-        setLoading(true)
+    const handleVoteClick =async ()=>{
+        setLoading(true);
+        try{
+            await onVoteSubmit();
+        } finally{
+            setLoading(false)
+        }
         
 
 
