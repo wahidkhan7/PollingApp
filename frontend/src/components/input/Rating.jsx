@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HiStar } from 'react-icons/hi'; // Correct icon
+import { HiStar } from 'react-icons/hi';
 
 const Rating = ({
   maxStars = 5,
@@ -30,13 +30,13 @@ const Rating = ({
   return (
     <div
       className={`flex gap-2 ${readOnly ? "cursor-default" : "cursor-pointer"}`}
-      onMouseLeave={handleMouseLeave} // Moved here properly
+      onMouseLeave={handleMouseLeave}
     >
       {[...Array(maxStars)].map((_, index) => {
         const starValue = index + 1;
         return (
           <span
-            key={index}
+            key={`star-${index}`}
             className={`text-3xl transition-colors ${
               starValue <= (hoverValue || value)
                 ? 'text-yellow-400'
@@ -44,6 +44,7 @@ const Rating = ({
             }`}
             onClick={() => handleClick(starValue)}
             onMouseEnter={() => handleMouseEnter(starValue)}
+            onMouseLeave={handleMouseLeave}
           >
             <HiStar />
           </span>

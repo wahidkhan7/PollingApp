@@ -17,18 +17,20 @@ const PollContent = ({
     case "yes/no":
         return (
             <>
-            {options.map((option,index)=>(
-                <OptionInputTile
-                 key = {option.id}
-                 isSelected={selectedOptionIndex===index}
-                 label={option.optionText || ""}
-                 onSelect={()=> onOptionSelect(index)}
-                />
-            ))}
+            {options.map((option, index) => (
+            <OptionInputTile
+                key={option.id || `option-${index}`}
+                isSelected={selectedOptionIndex === index}
+                label={option.optionText || ""}
+                onSelect={() => onOptionSelect(index)}
+            />
+))}
             </>
         )
     case "rating":
         return <Rating value={rating} onChnage={onRatingChange}/>;
+
+    
   }
 }
 
