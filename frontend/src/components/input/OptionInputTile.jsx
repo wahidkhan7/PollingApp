@@ -17,7 +17,7 @@ const OptionInputTile = ({
         onClick={onSelect}
         >
             {isSelected ? (
-                <MdRadioButtonChecked className='text-lg text-white'/>
+                <MdRadioButtonChecked className='text-lg text-black'/>
             ):(
                 <MdRadioButtonUnchecked className='text-lg text-slate-400'/>
             )}
