@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { FaBookmark,FaRegBookmark } from 'react-icons/fa6'
 
 const PollActions = (
+    {
     isVoteComplete,
     inputCaptured,
     onVoteSubmit,
@@ -10,20 +11,18 @@ const PollActions = (
     isMyPoll,
     pollClosed,
     onClosePoll,
-    onDelete,
+    onDelete
+    }
 
 ) => {
     const[loading,setLoading] = useState(false)
     const handleVoteClick =async ()=>{
         setLoading(true);
-        try{
+        try {
             await onVoteSubmit();
-        } finally{
-            setLoading(false)
+        } finally {
+            setLoading(false);
         }
-        
-
-
     }
       return (
     <div className='flex items-center gap-4'>
@@ -40,7 +39,7 @@ const PollActions = (
             }
         </button>
         {
-            inputCaptured && !isVoteComplete && (
+            !inputCaptured && !isVoteComplete && (
                 <button className='btn-small ml-auto'
                 onClick={handleVoteClick}
                 disabled={loading}
