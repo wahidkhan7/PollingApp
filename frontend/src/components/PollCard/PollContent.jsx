@@ -18,7 +18,6 @@ const PollContent = ({
     case "yes/no":
         return (
             <>
-<<<<<<< HEAD
             {options.map((option, index) => (
             <OptionInputTile
                 key={option.id || `option-${index}`}
@@ -27,7 +26,6 @@ const PollContent = ({
                 onSelect={() => onOptionSelect(index)}
             />
 ))}
-=======
              {options.map((option, index) => (
                 <OptionInputTile
                 key={option.id || index}
@@ -36,7 +34,6 @@ const PollContent = ({
                 onSelect={() => onOptionSelect(index)}
                 />
             ))}
->>>>>>> rahul
             </>
         )
     case "image-based":
@@ -55,10 +52,6 @@ const PollContent = ({
         )
     case "rating":
         return <Rating value={rating} onChnage={onRatingChange}/>;
-<<<<<<< HEAD
-
-    
-=======
     case "open-ended":
         return(
             <div className='mt-3'>
@@ -73,7 +66,6 @@ const PollContent = ({
         )
     default:
         return null;
->>>>>>> rahul
   }
 }
 
