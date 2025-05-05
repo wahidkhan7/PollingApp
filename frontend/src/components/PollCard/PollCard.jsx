@@ -1,29 +1,3 @@
-// import React from 'react'
-
-// const PollCard = (
-//     pollId,
-//     question,
-//     type,
-//     options,
-//     voters,
-//     response,
-//     creatorProfileImg,
-//     creatorName,
-//     creatorUsername,
-//     userHasVoted,
-//     isPollClosed,
-//     createdAt
-// ) => {
-//   return (
-//     <div>
-//         {question}
-//     </div>
-//   )
-// }
-
-// export default PollCard
-
-
 import React, { useCallback, useContext, useState,useEffect } from 'react'
 import { UserContext } from '../../context/UserContext'
 import { getPollBookmarked } from '../../utils/helper';
@@ -104,7 +78,7 @@ const PollCard = ({
                 setPollResult({
                     options:pollDetails.options || [],
                     voters:pollDetails.voters.length || 0,
-                    response:pollDetails.response || [],
+                    responses:pollDetails.responses || [],
                 });
                 setIsVoteComplete(hasVoted);
             }
@@ -116,15 +90,13 @@ const PollCard = ({
        //handle the submission of votes
        const handleVoteSubmit=async()=>{
         try{
-            const response = await axiosInstance.post(
-                API_PATH.POLLS.VOTE(pollId),
-                getPostData()
-            );
+            const response = await axiosInstance.post(API_PATH.POLLS.VOTE(pollId),getPostData());
             getPollDetial()
             setIsVoteComplete(true);
             onUserVoted();
             toast.success("Voted submitted successufully");
         }catch(error){
+            console.error("Full error response:", error.response);
             console.error(error.response?.data?.message || "Error sunmittiong vote")
         }
        }
@@ -174,15 +146,15 @@ const PollCard = ({
             <div className='ml-14 mt-3'>
                 <p className='text-[13px] text-black leading-8'>{question}</p>
                 <div className='mt-4'>
-                {(isVoteComplete || isPollClosed )? (
+                {isVoteComplete || isPollClosed ? (
                     <PollingResultContent
                      type={type}
                      options={pollResult.options || []}
                      voters = {pollResult.voters}
                      response={pollResult.responses || []}
                     />
-                ):
-                    (<PollContent
+                ): (
+                    <PollContent
                      type={type}
                      options={options}
                      selectedOptionIndex={selectedOptionIndex}
@@ -191,8 +163,8 @@ const PollCard = ({
                      onRatingChange={handleInput}
                      userResponse={userResponse}
                      onResponseChange={handleInput}
-                    />)
-                    }
+                    />
+                    )}
                 </div>
             </div>
         </div>

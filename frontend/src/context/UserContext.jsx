@@ -25,7 +25,7 @@ export const UserProvider = ({children}) => {
   //update totalPollsVotes count lacally
   const onUserVoted=()=>{
     const totalPollsVotes = user.totalPollsVotes || 0;
-    updateUserStats("totalPollsVoters",totalPollsVotes+1);
+    updateUserStats("totalPollsVoters",totalPollsVotes + 1);
   };
 
 
