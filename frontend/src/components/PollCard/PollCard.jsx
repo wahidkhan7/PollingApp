@@ -7,7 +7,8 @@ import PollContent from './PollContent';
 import { data } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosinstance';
 import { API_PATH } from '../../utils/apiPaths';
-import { toast, ToastContainer } from 'react-toastify';
+
+import toast from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 import PollingResultContent from './PollingResultContent';
 const PollCard = ({
@@ -59,11 +60,12 @@ const PollCard = ({
        //Generate post data based on the poll type
        const getPostData = useCallback(()=>{
         if(type === "open-ended"){
-            return { responseText:userResponse,voterId:user._id};
+            return { responseText: userResponse,voterId:user._id};
         }
         if(type === "rating"){
             return {optionIndex:rating -1,voterId:user._id};
         }
+
         return {optionIndex:selectedOptionIndex,voterId:user._id};
        },[type,userResponse, rating, selectedOptionIndex, user]);
 
@@ -80,38 +82,36 @@ const PollCard = ({
                     voters:pollDetails.voters.length || 0,
                     responses:pollDetails.responses || [],
                 });
-                setIsVoteComplete(hasVoted);
+                //setIsVoteComplete(hasVoted);
             }
             
         }catch(error){
-            console.log(error.response?.data?.message ||"error submitting vote")
+            console.log(error.response?.data?.message ||"Error submitting vote")
         }
        }
        //handle the submission of votes
-       const handleVoteSubmit=async()=>{
+       const handleVoteSubmit = async ()=>{
         try{
             const response = await axiosInstance.post(API_PATH.POLLS.VOTE(pollId),getPostData());
             getPollDetial()
             setIsVoteComplete(true);
             onUserVoted();
-            toast.success("Voted submitted successufully");
+            toast.success("Vote submitted successufully");
         }catch(error){
             console.error("Full error response:", error.response);
             console.error(error.response?.data?.message || "Error sunmittiong vote")
         }
        }
        //Toggles the bookmark status of a poll
-       const toggleBookmark = async () =>{
+       const toggleBookmark = async() =>{
         try{
-            const response = await axiosInstance.post(
-                API_PATH.POLLS.BOOKMARK(pollId)
-            );
+            const response = await axiosInstance.post(API_PATH.POLLS.BOOKMARK(pollId));
 
             toggleBookmarkId(pollId)
             setPollBookmarked((prev) => !prev)
-            toast.success("Poll bookmarked succesfully")
+            toast.success(response.data.message)
         }catch(error){
-            const errMsg = error?.response?.data?.message || "Error bookmarking poll";
+            const errMsg = error.response?.data?.message || "Error bookmarking poll";
             console.error(errMsg);
             toast.error(errMsg);
         }
@@ -119,6 +119,7 @@ const PollCard = ({
 
         return (!pollDeleted && (
         <div className='bg-slate-100/50 my-5 p-5 rounded-lg border border-slate-100 mx-auto'>
+
             <div className='flex items-start justify-between'>
                 <UserProfileInfo
                  imgUrl = {creatorProfileImg}
@@ -130,11 +131,11 @@ const PollCard = ({
                  pollId={pollId}
                  isVoteComplete={isVoteComplete}
                  inputCaptured={
-                    !(userResponse || selectedOptionIndex>=0 || rating)
+                    !!(userResponse || selectedOptionIndex >= 0 || rating)
                  }
                  onVoteSubmit = {handleVoteSubmit}
                  isBookmarked={pollBookmarked}
-                 toogleBoookmark={toggleBookmark}
+                 toggleBookmark={toggleBookmark}
                  isMyPoll = {isMyPoll}
                  pollClosed={pollClosed}
                  //will implement later
@@ -146,13 +147,14 @@ const PollCard = ({
             <div className='ml-14 mt-3'>
                 <p className='text-[13px] text-black leading-8'>{question}</p>
                 <div className='mt-4'>
-                {isVoteComplete || isPollClosed ? (
+                { isVoteComplete || isPollClosed ? (
                     <PollingResultContent
                      type={type}
                      options={pollResult.options || []}
                      voters = {pollResult.voters}
-                     response={pollResult.responses || []}
+                     responses={pollResult.responses || []}
                     />
+                  
                 ): (
                     <PollContent
                      type={type}

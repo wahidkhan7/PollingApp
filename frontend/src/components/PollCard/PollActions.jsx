@@ -39,7 +39,7 @@ const PollActions = (
             }
         </button>
         {
-            !inputCaptured && !isVoteComplete && (
+            inputCaptured && !isVoteComplete && (
                 <button className='btn-small ml-auto'
                 onClick={handleVoteClick}
                 disabled={loading}

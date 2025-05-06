@@ -25,7 +25,7 @@ export const UserProvider = ({children}) => {
   //update totalPollsVotes count lacally
   const onUserVoted=()=>{
     const totalPollsVotes = user.totalPollsVotes || 0;
-    updateUserStats("totalPollsVoters",totalPollsVotes + 1);
+    updateUserStats("totalPollsVotes",totalPollsVotes + 1);
   };
 
 
@@ -49,26 +49,62 @@ export const UserProvider = ({children}) => {
   //   updateUserStats("totalPollsCreated", currentCount);
   // }
   //Add or Remove poll id from bookmarkedPolls
-  const toggleBookmarkId = (id)=>{
+
+
+  // const toggleBookmarkId = (id)=>{
+  //   const bookmarks = user.bookmarkedPolls || [];
+  //   const index = bookmarks.indexOf(id);
+  //   if(index === -1){
+  //     //Add the ID if it's not in the array
+  //     setUser((prev)=>({
+  //       ...prev,
+  //       bookmarkedPolls: [...bookmarks, id],
+  //       totalPollsBookmarked: prev.totalPollsBookmarked + 1,
+  //     }));
+  //   }
+  //   else{
+  //     //Remove the Id if it's already in the array
+  //     setUser((prev)=>({
+  //       ...prev,
+  //       bookmarkedPolls: bookmarks.filter((item)=>item !== id),
+  //       totalPollsBookmarked:prev.totalPollsBookmarked-1,
+  //     }));
+  //   }
+  // }
+
+  const toggleBookmarkId = (id) => {
+    // Handle null user case
+    if (!user) return;
+  
+    // Initialize bookmarks array if it doesn't exist
     const bookmarks = user.bookmarkedPolls || [];
     const index = bookmarks.indexOf(id);
-    if(index === -1){
-      //Add the ID if it's not in the array
-      setUser((prev)=>({
-        ...prev,
-        bookmarkedPolls: [...bookmarks, id],
-        totalPollsBookmarked: prev.totalPollsBookmarked + 1,
-      }));
-    }
-    else{
-      //Remove the Id if it's already in the array
-      setUser((prev)=>({
-        ...prev,
-        bookmarkedPolls: bookmarks.filter((item)=>item !== id),
-        totalPollsBookmarked:prev.totalPollsBookmarked-1,
-      }));
-    }
+    
+    setUser((prev) => {
+      // Ensure we have previous state
+      if (!prev) return prev;
+      
+      const currentBookmarks = prev.bookmarkedPolls || [];
+      const currentCount = prev.totalPollsBookmarked || 0;
+  
+      if (index === -1) {
+        // Add the ID
+        return {
+          ...prev,
+          bookmarkedPolls: [...currentBookmarks, id],
+          totalPollsBookmarked: currentCount + 1,
+        };
+      } else {
+        // Remove the ID
+        return {
+          ...prev,
+          bookmarkedPolls: currentBookmarks.filter((item) => item !== id),
+          totalPollsBookmarked: Math.max(0, currentCount - 1), // Prevent negative count
+        };
+      }
+    });
   }
+
 
   return (
     <UserContext.Provider
