@@ -26,7 +26,7 @@ const App = () => {
             <Route path="/" element={<Root />} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/signUp" element={<SignUpForm />} />
-            <Route path="/Bookmarked" element={<Bookmarks />} />
+            {/* <Route path="/Bookmarked" element={<Bookmarks />} /> */}
             <Route path="/dashboard" element={<Home />} />
             <Route path="/create-poll" element={<CreatePoll />} />
             <Route path="/my-polls" element={<MyPolls />} />

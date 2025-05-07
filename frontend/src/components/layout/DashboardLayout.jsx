@@ -3,8 +3,9 @@ import Navbar from './Navbar'
 import SideMenu from './SideMenu'
 import { UserContext } from '../../context/UserContext'
 import UserDetailsCard from '../cards/UserDetailsCard'
+import TreadingPolls from './TreadingPolls'
 
-const DashboardLayout = ({children,activeMenu}) => {
+const DashboardLayout = ({children,activeMenu,stats,showStats}) => {
   const { user } = useContext(UserContext);
 
   return (
@@ -28,6 +29,8 @@ const DashboardLayout = ({children,activeMenu}) => {
             totalPollsCreated = {user && user.totalPollsCreated}
             totalPollsBookmarked = {user && user.totalPollsBookmarked}
             />
+
+            {showStats && stats?.length >0 && <TreadingPolls stats ={stats}/>}
         </div>
         </div>)}
     </div>
