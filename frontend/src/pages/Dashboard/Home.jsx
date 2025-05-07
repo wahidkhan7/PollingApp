@@ -76,7 +76,7 @@ const Home = () => {
                 />
 
 
-                   {allPolls.length=== 0 && !loading && (
+                   {allPolls.length === 0 && !loading && (
                                   <EmptyCard
                                   imgSrc = {CREATE_ICON}
                                   message="Welcome! You're the first user of the system, and there are no polls yet. Start by creating the first poll"
@@ -96,7 +96,7 @@ const Home = () => {
                 endMessage={<p className='info-text'>No more polls to display.</p>}
                 >
 
-                {allPolls.map((poll) => (
+                {/* {allPolls.map((poll) => (
                     <PollCard
                         key={`dashboard_${poll._id}`}
                         pollId={poll._id}
@@ -104,7 +104,7 @@ const Home = () => {
                         type={poll.type}
                         options={poll.options}
                         voters={poll.voters.length || 0}
-                        response={poll.response || []}
+                        responses={poll.responses || []}
                         creatorProfileImg={poll.creator.profileImageUrl || null}
                         creatorName={poll.creator.fullName}
                         creatorUsername={poll.creator.username}
@@ -112,7 +112,30 @@ const Home = () => {
                         isPollClosed={poll.closed || false}
                         createdAt={poll.createdAt || false}
                     />
-                ))}
+                ))} */}
+
+                   
+
+                    {allPolls.map((poll) => (
+                     <PollCard
+                         key={`dashboard_${poll._id}`}
+                         pollId={poll._id}
+                         question={poll.question}
+                         type={poll.type}
+                         options={poll.options}
+                         voters={poll.voters.length || 0}
+                        responses={poll.responses || []}
+                        creatorProfileImg={poll.creator.profileImageUrl || null}
+                         creatorName={poll.creator.fullName}
+                         creatorUsername={poll.creator.username}
+                         userhasVoted={poll.userhasVoted || false} 
+                         isPollClosed={poll.closed || false}
+                         createdAt={poll.createdAt || false}
+                         />
+                    ))}
+
+
+                       
                 </InfiniteScroll>
             </div>
         </DashboardLayout>

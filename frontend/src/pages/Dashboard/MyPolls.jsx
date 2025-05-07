@@ -12,7 +12,7 @@ import EmptyCard from '../../components/cards/EmptyCard'
 import CREATE_ICON from "../../assets/images/my-poll-icon.png"
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-const PAGE_SIZE = 5
+const PAGE_SIZE = 10
 
 const MyPolls = () => {
     useUserAuth()
@@ -97,7 +97,7 @@ const MyPolls = () => {
                 hasMore={hasMore}
                 loader={<h4 className='info-text'>Loading...</h4>}
                 //endMessage={<p className='info-text'>No more polls to display.</p>}
-                ></InfiniteScroll>
+                >
 
                 {allPolls.map((poll) => (
                     <PollCard
@@ -111,11 +111,13 @@ const MyPolls = () => {
                         creatorProfileImg={poll.creator.profileImageUrl || null}
                         creatorName={poll.creator.fullName}
                         creatorUsername={poll.creator.username}
-                        userHasVoted={poll.userHasVoted || false}
+                        userhasVoted={poll.userhasVoted || false}
                         isPollClosed={poll.closed || false}
                         createdAt={poll.createdAt || false}
+                        isMyPoll
                     />
                 ))}
+                </InfiniteScroll>
             </div>
         </DashboardLayout>
     )

@@ -32,7 +32,7 @@ const Rating = ({
   return (
     <div className="flex items-center gap-4">
       <div
-        className={`flex gap-2 ${readOnly ? 'cursor-default' : 'cursor-pointer'}`}
+        className={`flex gap-2 ${readOnly ? "cursor-default" : "cursor-pointer"}`}
         onMouseLeave={handleMouseLeave}
       >
         {[...Array(maxStars)].map((_, index) => {
@@ -42,8 +42,7 @@ const Rating = ({
               key={index}
               className={`text-3xl transition-colors ${
                 starValue <= (hoverValue || value)
-                  ? 'text-yellow-400'
-                  : 'text-gray-300'
+                ? 'text-yellow-400' : 'text-gray-300'
               }`}
               onClick={() => handleClick(starValue)}
               onMouseEnter={() => handleMouseEnter(starValue)}

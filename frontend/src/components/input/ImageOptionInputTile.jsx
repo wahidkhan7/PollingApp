@@ -6,7 +6,8 @@ const ImageOptionInputTile = ({
     onSelect
 }) => {
     const getColors = ()=>{
-        if(isSelected) return "norder-2 border-primary";
+        if(isSelected) return "border-2 border-primary";
+        
         return "border-transparent"
     }
   return <button

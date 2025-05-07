@@ -21,16 +21,17 @@ const PollCard = ({
     creatorProfileImg,
     creatorName,
     creatorUsername,
-    userHasVoted,
+    userhasVoted,
     isMyPoll,
     isPollClosed,
     createdAt
 }) => {
-       const { user,onUserVoted,toggleBookmarkId } = useContext(UserContext);
+       const { user,onUserVoted,toggleBookmarkId,onPollCreateOrDelete } = useContext(UserContext);
        const [selectedOptionIndex,setSelectedOptionIndex] = useState(-1);
        const[rating,setRating] = useState(0)
        const [userResponse,setUserResponse] = useState("");
-       const [isVoteComplete,setIsVoteComplete] = useState(userHasVoted);
+       //const [isVoteComplete,setIsVoteComplete] = useState(userHasVoted);
+       const [isVoteComplete, setIsVoteComplete] = useState(userhasVoted);
        const [pollResult,setPollResult] = useState({
         options,
         voters,
@@ -48,11 +49,21 @@ const PollCard = ({
         getPollDetial();
         }, []);
 
+        useEffect(() => {
+            setIsVoteComplete(userhasVoted);
+        }, [userhasVoted]);
+
        //Handles user input based on the poll type
        const handleInput = (value)=>{
-        if(type ==='rating') setRating(value);
-        else if(type === 'open-ended') setUserResponse(value);
-        else setSelectedOptionIndex(value);
+        if(type === "rating"){
+             setRating(value);
+        }
+        else if(type === "open-ended"){ 
+            setUserResponse(value);
+        }
+        else {
+            setSelectedOptionIndex(value);
+        }
 
        };
 
@@ -60,13 +71,13 @@ const PollCard = ({
        //Generate post data based on the poll type
        const getPostData = useCallback(()=>{
         if(type === "open-ended"){
-            return { responseText: userResponse,voterId:user._id};
+            return { responseText: userResponse, voterId: user._id};
         }
         if(type === "rating"){
-            return {optionIndex:rating -1,voterId:user._id};
+            return {optionIndex: rating -1, voterId: user._id};
         }
 
-        return {optionIndex:selectedOptionIndex,voterId:user._id};
+        return {optionIndex: selectedOptionIndex, voterId: user._id};
        },[type,userResponse, rating, selectedOptionIndex, user]);
 
        //get Poll Details by ID
@@ -78,9 +89,9 @@ const PollCard = ({
             if(response.data){
                 const pollDetails = response.data
                 setPollResult({
-                    options:pollDetails.options || [],
-                    voters:pollDetails.voters.length || 0,
-                    responses:pollDetails.responses || [],
+                    options: pollDetails.options || [],
+                    voters: pollDetails.voters.length || 0,
+                    responses: pollDetails.responses || [],
                 });
                 //setIsVoteComplete(hasVoted);
             }
@@ -98,7 +109,7 @@ const PollCard = ({
             onUserVoted();
             toast.success("Vote submitted successufully");
         }catch(error){
-            console.error("Full error response:", error.response);
+            //console.error("Full error response:", error.response);
             console.error(error.response?.data?.message || "Error sunmittiong vote")
         }
        }
@@ -116,6 +127,38 @@ const PollCard = ({
             toast.error(errMsg);
         }
        }
+
+       //Close Poll 
+       const closePoll = async()=>{
+        try {
+            const response = await axiosInstance.post(API_PATH.POLLS.CLOSE(pollId))
+            if(response.data){
+                setPollClosed(true);
+                toast.success(response.data?.message || "Poll Closed Successfully")
+            }
+        } catch (error) {
+            toast.error("Something went wrong.Pleasee try again.")
+            console.log("Something went wrong.Pleasee try again.",error)
+
+        }
+       }
+
+       //Delete Poll
+       const deletePoll = async()=>{
+        try {
+            const response = await axiosInstance.delete(API_PATH.POLLS.DELETE(pollId))
+            if(response.data){
+                setPollDeleted(true);
+                onPollCreateOrDelete()
+                toast.success(response.data?.message || "Poll Deleted Successfully")
+            }
+        } catch (error) {
+            toast.error("Something went wrong.Pleasee try again.")
+            console.log("Something went wrong.Pleasee try again.",error)
+
+        }
+       }
+
 
         return (!pollDeleted && (
         <div className='bg-slate-100/50 my-5 p-5 rounded-lg border border-slate-100 mx-auto'>
@@ -138,22 +181,23 @@ const PollCard = ({
                  toggleBookmark={toggleBookmark}
                  isMyPoll = {isMyPoll}
                  pollClosed={pollClosed}
-                 //will implement later
-                 onClosePoll={()=>{}}
-                 onDelete={()=>{}}
+                
+                 onClosePoll={closePoll}
+                 onDelete={deletePoll}
                 />
             </div>
 
             <div className='ml-14 mt-3'>
                 <p className='text-[13px] text-black leading-8'>{question}</p>
                 <div className='mt-4'>
-                { isVoteComplete || isPollClosed ? (
+                {isVoteComplete || isPollClosed ? (
                     <PollingResultContent
                      type={type}
                      options={pollResult.options || []}
                      voters = {pollResult.voters}
                      responses={pollResult.responses || []}
                     />
+                   
                   
                 ): (
                     <PollContent
@@ -166,7 +210,8 @@ const PollCard = ({
                      userResponse={userResponse}
                      onResponseChange={handleInput}
                     />
-                    )}
+                    )
+                }
                 </div>
             </div>
         </div>

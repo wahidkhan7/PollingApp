@@ -11,12 +11,14 @@ const PollActions = (
     isMyPoll,
     pollClosed,
     onClosePoll,
-    onDelete
+    onDelete,
+    
     }
 
 ) => {
     const[loading,setLoading] = useState(false)
-    const handleVoteClick =async ()=>{
+
+    const handleVoteClick = async ()=>{
         setLoading(true);
         try {
             await onVoteSubmit();
@@ -29,6 +31,29 @@ const PollActions = (
         {(isVoteComplete || pollClosed) && (
             <div className='text-[11px] font-medium text-slate-600 bg-sky-700/10 px-3 py-1 rounded-md'>{pollClosed ? "Closed":"Voted"}</div>
         )}
+       
+      
+       {isMyPoll && !pollClosed && (
+        <button 
+        className='btn-small text-orange-500 bg-orange-500/20 hover:bg-orange-500 hover:text-white  hover:border-orange-100' 
+        onClick={onClosePoll}
+        disabled={loading}
+        >   
+         Close  
+        </button>
+       )}
+
+
+       { isMyPoll && (
+        <button 
+        className='btn-small text-red-500 bg-red-500/10 hover:bg-red-500 hover:text-white  hover:border-orange-100' 
+        onClick={onDelete}
+        disabled={loading}
+        >   
+         Delete  
+        </button>
+      )}
+
 
         <button className='icon-btn' onClick={toggleBookmark}>
             {isBookmarked ? (
@@ -38,8 +63,9 @@ const PollActions = (
             )
             }
         </button>
-        {
-            inputCaptured && !isVoteComplete && (
+
+
+        {inputCaptured && !isVoteComplete && (
                 <button className='btn-small ml-auto'
                 onClick={handleVoteClick}
                 disabled={loading}
@@ -47,8 +73,7 @@ const PollActions = (
                     {loading? "Submitting...":"Submit"}
 
                 </button>
-            ) 
-        }
+            )}
     </div>
   )
 }
