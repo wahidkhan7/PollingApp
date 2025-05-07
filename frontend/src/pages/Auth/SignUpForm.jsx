@@ -7,6 +7,8 @@ import { validateEmail } from '../../utils/helper'
 import axiosInstance from '../../utils/axiosinstance'
 import { API_PATH } from '../../utils/apiPaths'
 
+import toast from 'react-hot-toast';
+
 const SignUpForm = () => {
   const [profilePic,setProfilePic] = useState(null)
   const [fullName,setFullName] = useState("")
@@ -49,11 +51,18 @@ const SignUpForm = () => {
             profileImageUrl
           });
           const {token,user} = response.data;
+          toast.success("Account Created successfully")
+          setTimeout(()=>{
+            navigate("/login")
+          },2000)
+        
         }catch(error){
           if(error.response && error.response.data.message){
+            toast.error("Account not created")
             setError(error.response.data.message);
           }else{
             setError("Something went wrong .Please try again");
+            toast.error("Account not created")
           }
         }
   }
@@ -117,3 +126,4 @@ const SignUpForm = () => {
 }
 
 export default SignUpForm
+
