@@ -18,9 +18,14 @@ A simple polling application to create, share, and visualize poll results.
 
 ## Screenshots 📸  
 
-![Poll Creation](https://via.placeholder.com/600x300?text=Poll+Creation+Screen)  
-![Results View](https://via.placeholder.com/600x300?text=Poll+Results+Page)  
-![Mobile View](https://via.placeholder.com/300x600?text=Mobile+Responsive+View)  
+### Dashboard 
+![Poll DashBoard](./Website-Images/Dashboard.png) 
+### Create Poll 
+![Poll Creation](./Website-Images/Create-Poll.png)  
+### Bookmarked 
+![Poll Bookmark](./Website-Images/Bookmarked.png)  
+### Signup 
+![Signup Page](./Website-Images/Signup.png)  
 
 ## Installation 🛠️  
 
