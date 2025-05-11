@@ -8,6 +8,7 @@ import axiosInstance from '../../utils/axiosinstance'
 import { API_PATH } from '../../utils/apiPaths'
 
 import toast from 'react-hot-toast';
+import uploadImage from '../../utils/uploadImage'
 
 const SignUpForm = () => {
   const [profilePic,setProfilePic] = useState(null)

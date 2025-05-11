@@ -98,8 +98,6 @@ const Home = () => {
 
              
 
-                   
-
                     {allPolls.map((poll) => (
                      <PollCard
                          key={`dashboard_${poll._id}`}
@@ -108,10 +106,10 @@ const Home = () => {
                          type={poll.type}
                          options={poll.options}
                          voters={poll.voters.length || 0}
-                        responses={poll.responses || []}
-                        creatorProfileImg={poll.creator.profileImageUrl || null}
-                         creatorName={poll.creator.fullName}
-                         creatorUsername={poll.creator.username}
+                         responses={poll.responses || []}
+                         creatorProfileImg={poll.creator?.profileImageUrl || null}
+                         creatorName={poll.creator?.fullName}
+                         creatorUsername={poll.creator?.username}
                          userhasVoted={poll.userhasVoted || false} 
                          isPollClosed={poll.closed || false}
                          createdAt={poll.createdAt || false}
